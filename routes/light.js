@@ -3,7 +3,7 @@ const router = express.Router();
 
 router.post("/values", async (req, res) => {
   try {
-    const { temp_val, humidity_val, distance_val, light_val, ph_value, ip_address } = req.body;
+    const { temp_val, humidity_val, distance_val, light_val, ph_value, ip_address, code } = req.body;
     const values = {
       temp: temp_val,
       humidity: humidity_val,
@@ -37,5 +37,20 @@ router.get('/ip', async (req, res, next)=>{
     next(error)
   }
 })
+
+router.post('/address', async (req, res, next)=>{
+  try {
+    const { address } = req.body;
+    // console.log(address)
+    global.io.sockets.emit("update_address", { address: address });
+    return res.status(200).send({
+      message: address,
+      values: "ip_address",
+    });
+  } catch (error) {
+    next(error)
+  }
+})
+
 
 module.exports = router;
